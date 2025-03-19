@@ -60,8 +60,16 @@ const createUser = asyncHandler(async(req,res)=>{
 
 
 const updateUser = asyncHandler(async(req,res)=>{
+
+    
+    // if (!req.file) {
+    //     return res.send("Please upload an image");
+    // }
+    // res.render("index", { image: `/uploads/${req.file.filename}` });
     const userId = req.params.id; // Get user ID from URL parameter
     const updates = req.body;
+    updates.profile_image_url=req.file.path;
+    
     // const base64Image = imageToBase64(imagePath);
     try{
         const updateFields = [];
@@ -78,7 +86,9 @@ const updateUser = asyncHandler(async(req,res)=>{
                 paramCounter++;
             }
         }
-        
+        // let obj ={
+        //     username : "dilshodbek"
+        // }
 
         const updateQuery = `
             UPDATE usersList 
@@ -114,3 +124,8 @@ module.exports = {
     updateUser,
 }
 
+// 80 PLATA
+// 100 PROCESSOR
+// 50 32GB OPERATIVKA
+// 35 CASE AVTECH AERO
+// 35 650W BLOCK
