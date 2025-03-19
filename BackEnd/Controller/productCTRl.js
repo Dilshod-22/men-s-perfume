@@ -9,6 +9,10 @@ const pool = new Pool({
   port: 5432, 
 });
 
+const getCategory = asyncHandler(async(req,res) => {
+    let category = ["Yuz va tana parvarishi","soch parvarishi","Soqol va qirilish","Og'iz gigiyenasi","Qo'l va Oyoq parvarishi","Atir va hidlar","Oziqlantiruvchilar","Quyoshdan himoya vositalari","Boshqalar"]
+    res.json(category).end();
+})
 
 const searchProduct = asyncHandler(async(req,res) => {
 
@@ -113,6 +117,7 @@ const deleteProduct = asyncHandler(async(req,res) => {
 
 
 module.exports = {
+    getCategory,
     searchProduct,
     createProduct,
     updateProduct,

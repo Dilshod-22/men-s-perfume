@@ -14,10 +14,10 @@ app.use(express.static("uploads"));
 
 
 const UserRoute = require("./Routers/userRouter");
-
+const ProductRoute = require("./Routers/productRouter");
 
 app.use("/api/user/",UserRoute);
-
+app.use("/api/product/",ProductRoute);
 
 
 
