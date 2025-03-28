@@ -124,8 +124,5 @@ module.exports = {
     updateUser,
 }
 
-// 80 PLATA
-// 100 PROCESSOR
-// 50 32GB OPERATIVKA
-// 35 CASE AVTECH AERO
-// 35 650W BLOCK
+
+// skidka base1
