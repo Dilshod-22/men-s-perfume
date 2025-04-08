@@ -2,6 +2,7 @@ const Route = require("express").Router();
 const multer = require("multer");
 const path = require("path");
 const {
+    loginUser,
     getAllUser,
     createUser,
     searchUser,
@@ -18,7 +19,7 @@ const upload = multer({ storage: storage });
 
 
 
-
+Route.post("/loginUser",loginUser);
 Route.get("/getAllUser",getAllUser);
 Route.post("/createUser",createUser);
 Route.post("/searchUser",searchUser);

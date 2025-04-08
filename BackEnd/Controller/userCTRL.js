@@ -19,6 +19,23 @@ const getAllUser = asyncHandler(async(req,res) => {
     res.json(allUSer.rows).end();
 })
 
+
+const loginUser = asyncHandler(async(req,res) => {
+    const {email, password} = req.body;
+    try{
+        let query = `SELECT id, username, preferred_language,profile_image_url
+FROM userslist
+WHERE email = '${email}' AND password_hash = '${password}'`;
+// console.log(query);
+
+        let sorov =await  pool.query(query);
+        res.json(sorov).end();
+    }catch(err){
+        res.json(err).status(200);
+    }
+});
+
+
 const searchUser = asyncHandler(async(req,res)=>{
     try{
         const { username } = req.body;
@@ -40,7 +57,7 @@ const searchUser = asyncHandler(async(req,res)=>{
 })
 
 const createUser = asyncHandler(async(req,res)=>{
-
+    
     const {
         username,
         email,
@@ -118,6 +135,7 @@ const updateUser = asyncHandler(async(req,res)=>{
 })
 
 module.exports = {
+    loginUser,
     getAllUser,
     createUser,
     searchUser,

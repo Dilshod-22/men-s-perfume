@@ -1,7 +1,14 @@
-const { query } = require("express");
 const asyncHandler = require("express-async-handler");
 const { Pool } = require("pg");
 const { v4: uuidv4 } = require("uuid");
+const fs = require("fs");
+const ImageKit = require("imagekit");
+const path = require("path");
+const imagekit = new ImageKit({
+  publicKey: "public_rAybsQad4S9MYw+BKkmoRhSqD/I=",
+  privateKey: "private_TSz93gxCDXt8uvllKTuxKwJL7a4=",
+  urlEndpoint: "https://ik.imagekit.io/qk82mhvi8",
+});
 
 const pool = new Pool({
   user: "postgres",
@@ -44,25 +51,182 @@ const searchProduct = asyncHandler(async (req, res) => {
     })
     .end();
 });
-const createProduct = asyncHandler(async (req, res) => {
-  const { productName, brand, sku, count, price, category, extrainfo } =
-    req.body;
+const assistCreateProduct = (getQuery, getQueryParams) => {
+  return new Promise((resolve, reject) => {
+    pool.query(getQuery, getQueryParams, (error, result) => {
+      if (error) {
+        return reject(error);
+      }
+      resolve(result);
+    });
+  });
+};
 
+const createProduct = asyncHandler(async (req, res) => {
+  // try {
+  //   const updates = req.body;
+  //   const allowedFields = [
+  //     "productname",
+  //     "brand",
+  //     "count",
+  //     "sku",
+  //     "ratingproduct",
+  //     "price",
+  //     "category",
+  //     "extrainfo",
+  //     "productimage",
+  //   ];
+
+  //   let insertFields = [];
+  //   let valuePlaceholders = [];
+  //   let queryParams = [];
+  //   let paramCounter = 1;
+
+  //   for (const [key, value] of Object.entries(updates)) {
+  //     if (allowedFields.includes(key)) {
+  //       insertFields.push(key); // Ustun nomlari
+  //       valuePlaceholders.push(`$${paramCounter}`);
+  //       // Parametr joylashuvi
+  //       if (key === "extrainfo") {
+  //         const extrainfo = {
+  //           detail: req.body.detail || "Himoya vositasi",
+  //           color: req.body.color || "black",
+  //         };
+  //         queryParams.push(extrainfo);
+  //       } else if (req.file.path) {
+
+  //         imagekit.upload(
+  //             {
+  //               file: req.file.buffer, // 💡 buffer — xotiradagi fayl
+  //               fileName: req.file.originalname,
+  //             },
+  //             function (error, result) {
+  //               if (error) {
+  //                 console.error("❌ Yuklash xatosi:", error);
+  //                 // res.status(500).json({ error: "Rasm yuklashda xatolik" });
+  //               } else {
+  //                 console.log("✅ Rasm yuklandi:", result.url);
+  //                 queryParams.push(result.url);
+  //               }
+  //             }
+  //         );
+  //       } else {
+  //         queryParams.push(value);
+  //       } // Qiymatlar
+  //       paramCounter++;
+  //     }
+  //   }
+
+  //   const query = `
+  //     INSERT INTO productslist (${insertFields.join(", ")})
+  //     VALUES (${valuePlaceholders.join(", ")})
+  //     RETURNING *;
+  //   `;
+
+  //    new Promise((resolve, reject) => {
+  //     pool.query(query, queryParams, (error, result) => {
+  //       if (error) {
+  //         return reject(error);
+  //       }
+  //       console.log("✅ Mahsulot qo‘shildi:", result.rows[0]);
+  //       res.end();
+  //    })}
+  //   );
+
+  // } catch (error) {
+  //   console.error("❌ Xatolik:", error);
+  // }
   try {
-    let queryText =
-      "INSERT INTO productsList (productName, brand, count, sku, price, category, extraInfo) VALUES ($1, $2, $3, $4, $5, $6, $7)";
-    await pool.query(queryText, [
-      productName,
-      brand,
-      sku,
-      count,
-      price,
-      category,
-      extrainfo,
-    ]);
-    res.json("success").end();
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const updates = req.body;
+
+    const allowedFields = [
+      "productname",
+      "brand",
+      "count",
+      "sku",
+      "ratingproduct",
+      "price",
+      "category",
+      "extrainfo",
+      "productimage",
+    ];
+
+    let insertFields = [];
+    let valuePlaceholders = [];
+    let queryParams = [];
+    let paramCounter = 1;
+
+    // 🔁 Rasm yuklash (agar rasm bo‘lsa)
+    let uploadedImageUrl = null;
+    if (req.file && req.file.buffer) {
+      await new Promise((resolve, reject) => {
+        imagekit.upload(
+          {
+            file: req.file.buffer,
+            fileName: req.file.originalname,
+          },
+          (error, result) => {
+            if (error) {
+              console.log(err);
+
+              return reject(error);
+            } else {
+              uploadedImageUrl = result.url;
+
+              resolve(result.url);
+            }
+          }
+        );
+      });
+    }
+    for (const [key, value] of Object.entries(updates)) {
+      if (!allowedFields.includes(key)) continue;
+      insertFields.push(key);
+      valuePlaceholders.push(`$${paramCounter}`);
+      if (key === "extrainfo") {
+        const extrainfo = {
+          detail: req.body.detail || "Himoya vositasi",
+          color: req.body.color || "black",
+        };
+        queryParams.push(extrainfo);
+      } else {
+        queryParams.push(value);
+      }
+      paramCounter++;
+    }
+    if (uploadedImageUrl) {
+      ('{"imageLink":"https://ik.imagekit.io/qk82mhvi8/mySkill_HDKPWYpsc.jpg","imageId":"fsvsfse23"}');
+      const extraImage = {
+        imageLink: uploadedImageUrl,
+        imageID: uuidv4(),
+      };
+      insertFields.push("productimage");
+
+      valuePlaceholders.push(`$${valuePlaceholders.length + 1}`);
+      queryParams.push(extraImage);
+      paramCounter++;
+    }
+
+    const query = `
+      INSERT INTO productslist (${insertFields.join(", ")})
+      VALUES (${valuePlaceholders.join(", ")})
+      RETURNING *;
+    `;
+
+    console.log(queryParams);
+
+    const result = await new Promise((resolve, reject) => {
+      pool.query(query, queryParams, (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+    });
+
+    console.log("✅ Mahsulot qo‘shildi:", result.rows[0]);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("❌ Xatolik:", error);
+    res.status(500).json({ error: error.message });
   }
 });
 const updateProduct = asyncHandler(async (req, res) => {
@@ -84,6 +248,28 @@ const updateProduct = asyncHandler(async (req, res) => {
       "extraInfo",
     ];
 
+    let uploadedImageUrl = null;
+    if (req.file && req.file.buffer) {
+      await new Promise((resolve, reject) => {
+        imagekit.upload(
+          {
+            file: req.file.buffer,
+            fileName: req.file.originalname,
+          },
+          (error, result) => {
+            if (error) {
+              console.log(err);
+
+              return reject(error);
+            } else {
+              uploadedImageUrl = result.url;
+
+              resolve(result.url);
+            }
+          }
+        );
+      });
+    }
     for (const [key, value] of Object.entries(updates)) {
       if (allowedFields.includes(key)) {
         updateFields.push(`${key} = $${paramCounter}`);
@@ -91,11 +277,11 @@ const updateProduct = asyncHandler(async (req, res) => {
         paramCounter++;
       }
     }
-    const pathFileImage = req.file.path;
-    const updatedPath = pathFileImage.replace(/\\/g, "/");
-    console.log(updatedPath);
-
-    let imageURl = `productimage = productimage || '[{"link": "${updatedPath}", "id": "${uuidv4()}"}]'::jsonb`;
+    if (uploadedImageUrl) {
+      let imageURl = `productimage = productimage || '[{"link": "${uploadedImageUrl}", "id": "${uuidv4()}"}]'::jsonb`;
+    } else {
+      let imageURl = `productimage = productimage || '[{"link": "${buffer}", "id": "${uuidv4()}"}]'::jsonb`;
+    }
 
     let queryText = `UPDATE productsList 
         SET ${updateFields.join(", ")}, ${imageURl}
@@ -103,7 +289,6 @@ const updateProduct = asyncHandler(async (req, res) => {
         RETURNING id, productName, brand, count, sku, ratingProduct, price, category, extraInfo, productimage`;
 
     queryParams.push(productId);
-    console.log(queryText);
 
     const result = await pool.query(queryText, queryParams);
 
@@ -134,7 +319,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
 });
 const deleteProductImage = asyncHandler(async (req, res) => {
   try {
-    const {userID,imageId} = req.body;
+    const { userID, imageId } = req.body;
     let textQuery = `UPDATE productslist
           SET productimage = (
               SELECT jsonb_agg(elem)
@@ -147,20 +332,25 @@ const deleteProductImage = asyncHandler(async (req, res) => {
       status: "success",
       message: "Product image delete successfully",
     });
-  }
-  catch(err){
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
 const announceSkidka = asyncHandler(async (req, res) => {
   try {
-      
-  }catch(err){
+  } catch (err) {}
+});
 
+const getProducts = asyncHandler(async (req, res) => {
+  try {
+    let queryText = `SELECT * FROM productsList`;
+    let resultJson = await pool.query(queryText);
+    res.json(resultJson.rows).status(200).end();
+  } catch (err) {
+    res.json(err).status(400).end();
   }
-})
-
+});
 
 module.exports = {
   getCategory,
@@ -169,5 +359,6 @@ module.exports = {
   updateProduct,
   deleteProduct,
   deleteProductImage,
-  announceSkidka
+  announceSkidka,
+  getProducts,
 };

@@ -15,7 +15,7 @@
     "@headlessui/vue": "^1.7.23",
     "@heroicons/vue": "^2.2.0",
     "@popperjs/core": "^2.11.8",
-    "axios": "^1.4.0",
+    "axios": "^1.8.4",
     "chart.js": "2.9.4",
     "lucide-vue-next": "^0.479.0",
     "primeicons": "^6.0.1",
