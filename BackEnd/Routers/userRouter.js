@@ -6,7 +6,7 @@ const {
     getAllUser,
     createUser,
     searchUser,
-    updateUser
+    updateUser,
 } = require("../Controller/userCTRL");
 
 const storage = multer.diskStorage({
@@ -24,5 +24,6 @@ Route.get("/getAllUser",getAllUser);
 Route.post("/createUser",createUser);
 Route.post("/searchUser",searchUser);
 Route.put("/updateUser/:id",upload.single("profile_image_url"),updateUser);
+
 
 module.exports = Route;

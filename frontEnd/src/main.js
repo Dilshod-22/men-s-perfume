@@ -2,6 +2,7 @@ import './main.js'
 import "./style.css"
 import 'primeicons/primeicons.css';
 import { createApp } from 'vue'
+import router from './router';
 
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
@@ -15,12 +16,12 @@ import App from './App.vue'
 
 
 
-const app = createApp(App)
+const app = createApp(App);
 
 // app.use(store)
 app.use(PrimeVue)
 app.component('Avatar',Avatar)
-// app.use(router)
+app.use(router)
 app.mount('#app')
 
 

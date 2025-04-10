@@ -3,6 +3,10 @@
   <div class="filter-container">
     <!-- Price Range Section -->
     <div class="filter-section">
+      <div>
+        <h3 class="text-lg">search</h3>
+        <input class="border border-black h-9 w-full mt-3 mb-5 rounded pl-2" type="text" v-model="prodcutName"  @input="updateNameFilter">
+      </div>
       <div class="filter-header" @click="togglePriceFilter">
         <h3>Цена, BYN</h3>
         <span class="arrow" :class="{ 'arrow-up': showPriceFilter }">^</span>
@@ -45,7 +49,7 @@
     <!-- Brand Filter Section -->
     <div class="filter-section">
       <div class="filter-header" @click="toggleBrandFilter">
-        <h3>Бренд</h3>
+        <h3>Category</h3>
         <span class="arrow" :class="{ 'arrow-up': showBrandFilter }">^</span>
       </div>
       
@@ -81,6 +85,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: 'PriceFilter',
   data() {
@@ -98,6 +103,7 @@ export default {
         min: 0,
         max: 1000
       },
+      prodcutName:'',
       
       // Brand list
       brands: [
@@ -107,8 +113,16 @@ export default {
         { id: 'dolce', name: 'DOLCE&GABBANA', selected: true }
       ]
     };
+    
   },
+  async mounted(){
+ 
+    const response = await axios.get('http://localhost:8000/api/product/get/categoriya');
+    this.brands = response.data;
+},
+  
   methods: {
+
     // Toggle filter sections
     togglePriceFilter() {
       this.showPriceFilter = !this.showPriceFilter;
@@ -136,6 +150,9 @@ export default {
         min: this.minPrice,
         max: this.maxPrice
       });
+    },
+    updateNameFilter(){
+        this.$emit('name-change',this.prodcutName);
     },
     
     updateBrandFilter() {

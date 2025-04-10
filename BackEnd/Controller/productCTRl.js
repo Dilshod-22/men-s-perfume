@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const ImageKit = require("imagekit");
 const path = require("path");
+const streamifier = require('streamifier');
 const imagekit = new ImageKit({
   publicKey: "public_rAybsQad4S9MYw+BKkmoRhSqD/I=",
   privateKey: "private_TSz93gxCDXt8uvllKTuxKwJL7a4=",
@@ -21,16 +22,14 @@ const getCategory = asyncHandler(async (req, res) => {
   console.log("ishladi");
 
   let category = [
-    "Yuz va tana parvarishi",
-    "soch parvarishi",
-    "Soqol va qirilish",
-    "Og'iz gigiyenasi",
-    "Qo'l va Oyoq parvarishi",
-    "Atir va hidlar",
-    "Oziqlantiruvchilar",
-    "Quyoshdan himoya vositalari",
-    "Salomatlik",
-    "Boshqalar",
+    {name:"Yuz va tana parvarishi"},
+    {name:"soch parvarishi"},
+    {name:"Soqol va qirilish"},
+    {name:"Og'iz gigiyenasi"},
+    {name:"Qo'l va Oyoq parvarishi"},
+    {name:"Atir va hidlar"},
+    {name:"Salomatlik"},
+    {name:"Boshqalar"},
   ];
   res.json(category).end();
 });
@@ -179,6 +178,7 @@ const createProduct = asyncHandler(async (req, res) => {
         );
       });
     }
+    
     for (const [key, value] of Object.entries(updates)) {
       if (!allowedFields.includes(key)) continue;
       insertFields.push(key);
@@ -197,6 +197,7 @@ const createProduct = asyncHandler(async (req, res) => {
     if (uploadedImageUrl) {
       ('{"imageLink":"https://ik.imagekit.io/qk82mhvi8/mySkill_HDKPWYpsc.jpg","imageId":"fsvsfse23"}');
       const extraImage = {
+        // status:
         imageLink: uploadedImageUrl,
         imageID: uuidv4(),
       };
@@ -228,6 +229,27 @@ const createProduct = asyncHandler(async (req, res) => {
     console.error("❌ Xatolik:", error);
     res.status(500).json({ error: error.message });
   }
+});
+
+const thumbnailYuklash = asyncHandler(()=>{
+  const uploadThumbnail = async (fileBuffer) => {
+    const resizedBuffer = await sharp(fileBuffer)
+      .resize(300, 300)
+      .jpeg()
+      .toBuffer();
+  
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        { folder: 'products/thumbnails' }, // ixtiyoriy papka
+        (error, result) => {
+          if (error) return reject(error);
+          resolve(result.secure_url); // yoki result.public_id
+        }
+      );
+  
+      streamifier.createReadStream(resizedBuffer).pipe(uploadStream);
+    });
+  };
 });
 const updateProduct = asyncHandler(async (req, res) => {
   const productId = req.params.id;
@@ -352,6 +374,16 @@ const getProducts = asyncHandler(async (req, res) => {
   }
 });
 
+const takeProduct = asyncHandler(async (req, res) => {
+  console.log('keldi');
+  
+  const {id} = req.params;
+  let newQuery = `SELECT * FROM productslist WHERE id='${id}'`;
+  
+  let response = await pool.query(newQuery);
+  res.json(response).end();
+});
+
 module.exports = {
   getCategory,
   searchProduct,
@@ -361,4 +393,5 @@ module.exports = {
   deleteProductImage,
   announceSkidka,
   getProducts,
+  takeProduct
 };

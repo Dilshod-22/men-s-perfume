@@ -11,7 +11,8 @@ const {
     deleteProduct,
     deleteProductImage,
     announceSkidka,
-    getProducts
+    getProducts,
+    takeProduct
 } = require("../Controller/productCTRl");
 
 
@@ -29,6 +30,7 @@ Route.delete("/deleteProduct/:id",deleteProduct);
 Route.post("/deleteProductImage",deleteProductImage);
 Route.post("/announceSkidka",announceSkidka);
 Route.get("/get/ProdcutsMix",getProducts);
+Route.post("/takeProductInfo/:id",takeProduct)
 
 
 
