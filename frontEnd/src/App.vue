@@ -1,8 +1,9 @@
 <script setup>
 import { ref } from 'vue';
-  let authUser = ref(false);
+  let authUser = ref(true);
   // import mainView from "./views/mainView.vue"
   import HomePage from "./views/HomePage.vue";
+  import adminDashboard from './views/dashboard/adminDashboard.vue';
   import AuthPage from "./views/Auth.vue";
   const updateAuthUser = (act) => {
     authUser.value = !act;
@@ -15,8 +16,8 @@ import { ref } from 'vue';
   <div class="h-screen">
     <AuthPage v-if='authUser' @update-auth-user="updateAuthUser"/>
     
-    <HomePage v-if='!authUser'/>
-    
+    <!-- <adminDashboard v-if='!authUser'/> -->
+    <HomePage v-if='!authUser'/>    
   </div>
 </template>
 

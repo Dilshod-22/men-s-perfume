@@ -6,13 +6,13 @@
         <!-- Product Images -->
         <div class="product-images">
           <div class="thumbnail-column">
-            <img src="/api/placeholder/80/80" alt="Thumbnail 1" class="thumbnail active" />
-            <img src="/api/placeholder/80/80" alt="Thumbnail 2" class="thumbnail" />
-            <img src="/api/placeholder/80/80" alt="Thumbnail 3" class="thumbnail" />
+            <img src="https://ik.imagekit.io/qk82mhvi8/2437915291_Q-greR5eL.jpg?updatedAt=1744577470440" alt="Thumbnail 1" class="thumbnail active" />
+            <img src="https://ik.imagekit.io/qk82mhvi8/2437915291_Q-greR5eL.jpg?updatedAt=1744577470440" alt="Thumbnail 2" class="thumbnail" />
+            <img src="https://ik.imagekit.io/qk82mhvi8/2437915291_Q-greR5eL.jpg?updatedAt=1744577470440" alt="Thumbnail 3" class="thumbnail" />
           </div>
           
           <div class="main-image-container">
-            <img src="/api/placeholder/300/400" alt="FLOWERBOMB" class="main-image" />
+            <img src="https://ik.imagekit.io/qk82mhvi8/%C3%90_%C3%90%C2%BD%C3%90_%C3%90%C2%BC%C3%90%C2%BE%C3%90%C2%BA_%C3%91_%C3%90%C2%BA%C3%91_%C3%90_%C3%90%C2%BD%C3%90__2025-04-09_133054_hJC9UwFSD.png?updatedAt=1744575230938" alt="FLOWERBOMB" class="main-image" />
             <button class="favorite-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
@@ -115,7 +115,7 @@
         <div class="product-grid">
           <div v-for="(product, index) in similarProducts" :key="index" class="product-card">
             <div class="product-image-container">
-              <img :src="'/api/placeholder/170/200'" :alt="product.name" class="product-thumbnail" />
+              <img src="https://ik.imagekit.io/qk82mhvi8/%C3%90_%C3%90%C2%BD%C3%90_%C3%90%C2%BC%C3%90%C2%BE%C3%90%C2%BA_%C3%91_%C3%90%C2%BA%C3%91_%C3%90_%C3%90%C2%BD%C3%90__2025-04-09_133054_hJC9UwFSD.png?updatedAt=1744575230938" :alt="product.name" class="product-thumbnail" />
               <button class="card-favorite-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="heart-icon">
                   <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>

@@ -11,7 +11,7 @@
       <div class="products-section">
         <div v-if="filteredProducts.length > 0" class="products-grid">
           <div 
-            v-for="productm in filteredProducts" 
+            v-for="productm in products" 
             :key="productm.id" 
             class="product-card"
           >

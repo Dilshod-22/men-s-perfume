@@ -50,6 +50,29 @@ const searchProduct = asyncHandler(async (req, res) => {
     })
     .end();
 });
+
+const imageFileUploadAssist = asyncHandler(async(req,res) => {
+  console.log(req.file);
+  
+  try {
+    if (req.file && req.file.buffer) {
+      const result = await imagekit.upload({
+        file: req.file.buffer,
+        fileName: req.file.originalname,
+      });
+      console.log(result.url);
+      
+      return res.status(200).json({ url: result.url });
+    } else {
+      return res.status(400).json({ error: "No image file provided" });
+    }
+  } catch (error) {
+    console.error("Image upload error:", error);
+    return res.status(500).json({ error: "Image upload failed" });
+  }
+})
+ 
+
 const assistCreateProduct = (getQuery, getQueryParams) => {
   return new Promise((resolve, reject) => {
     pool.query(getQuery, getQueryParams, (error, result) => {
@@ -62,79 +85,8 @@ const assistCreateProduct = (getQuery, getQueryParams) => {
 };
 
 const createProduct = asyncHandler(async (req, res) => {
-  // try {
-  //   const updates = req.body;
-  //   const allowedFields = [
-  //     "productname",
-  //     "brand",
-  //     "count",
-  //     "sku",
-  //     "ratingproduct",
-  //     "price",
-  //     "category",
-  //     "extrainfo",
-  //     "productimage",
-  //   ];
 
-  //   let insertFields = [];
-  //   let valuePlaceholders = [];
-  //   let queryParams = [];
-  //   let paramCounter = 1;
-
-  //   for (const [key, value] of Object.entries(updates)) {
-  //     if (allowedFields.includes(key)) {
-  //       insertFields.push(key); // Ustun nomlari
-  //       valuePlaceholders.push(`$${paramCounter}`);
-  //       // Parametr joylashuvi
-  //       if (key === "extrainfo") {
-  //         const extrainfo = {
-  //           detail: req.body.detail || "Himoya vositasi",
-  //           color: req.body.color || "black",
-  //         };
-  //         queryParams.push(extrainfo);
-  //       } else if (req.file.path) {
-
-  //         imagekit.upload(
-  //             {
-  //               file: req.file.buffer, // 💡 buffer — xotiradagi fayl
-  //               fileName: req.file.originalname,
-  //             },
-  //             function (error, result) {
-  //               if (error) {
-  //                 console.error("❌ Yuklash xatosi:", error);
-  //                 // res.status(500).json({ error: "Rasm yuklashda xatolik" });
-  //               } else {
-  //                 console.log("✅ Rasm yuklandi:", result.url);
-  //                 queryParams.push(result.url);
-  //               }
-  //             }
-  //         );
-  //       } else {
-  //         queryParams.push(value);
-  //       } // Qiymatlar
-  //       paramCounter++;
-  //     }
-  //   }
-
-  //   const query = `
-  //     INSERT INTO productslist (${insertFields.join(", ")})
-  //     VALUES (${valuePlaceholders.join(", ")})
-  //     RETURNING *;
-  //   `;
-
-  //    new Promise((resolve, reject) => {
-  //     pool.query(query, queryParams, (error, result) => {
-  //       if (error) {
-  //         return reject(error);
-  //       }
-  //       console.log("✅ Mahsulot qo‘shildi:", result.rows[0]);
-  //       res.end();
-  //    })}
-  //   );
-
-  // } catch (error) {
-  //   console.error("❌ Xatolik:", error);
-  // }
+  
   try {
     const updates = req.body;
 
@@ -366,7 +318,18 @@ const announceSkidka = asyncHandler(async (req, res) => {
 
 const getProducts = asyncHandler(async (req, res) => {
   try {
-    let queryText = `SELECT * FROM productsList`;
+    let queryText = `SELECT
+        productname,
+        brand,
+        price,
+        ratingproduct,
+        CASE
+          WHEN productimage ->> 'status' = 'thumbnail'
+          THEN productimage ->> 'imageLink'
+          ELSE NULL
+        END AS main_image
+      FROM
+        productslist`;
     let resultJson = await pool.query(queryText);
     res.json(resultJson.rows).status(200).end();
   } catch (err) {
@@ -393,5 +356,6 @@ module.exports = {
   deleteProductImage,
   announceSkidka,
   getProducts,
-  takeProduct
+  takeProduct,
+  imageFileUploadAssist
 };

@@ -1,26 +1,23 @@
-
 <template>
   <div class="app">
-      <navbarDesign/>
-    <!-- <h2>Фильтр товаров</h2> -->
-    <router-view /> 
-    <!-- <router-link to="/korzinka">     
-      <korzinka/>
-    </router-link>
-    <router-link to="/home">     
-      <korzinka/>
-    </router-link> -->
-    
+    <!-- Only show navbar if current route starts with /admin -->
+    <navbarDesign v-if="!showNavbar" />
+
+    <!-- Render the current route view -->
+    <router-view />
   </div>
 </template>
 
 <script setup>
-
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 import navbarDesign from './navbar.vue';
 
+const route = useRoute();
 
-// Data (using reactive references)
-
+const showNavbar = computed(() => {
+  return route.path.startsWith('/DashKT');
+});
 </script>
 
 <style>

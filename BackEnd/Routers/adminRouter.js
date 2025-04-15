@@ -4,35 +4,17 @@ const path = require("path");
 
 
 const {
-    getCategory,
-    searchProduct,
-    createProduct,
-    updateProduct,
-    deleteProduct,
-    deleteProductImage,
-    announceSkidka,
-    getProducts,
-    takeProduct,
-    imageFileUploadAssist
-} = require("../Controller/productCTRl");
+    getBaseInfo,
+
+} = require("../Controller/adminCTRL");
 
 
 
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
 
 
 
-Route.get("/get/categoriya",getCategory);
-Route.post("/searchProduct",searchProduct);
-Route.post("/createProduct", upload.array("productimage"),createProduct);
-Route.put("/updateProduct/:id",upload.single("productimage"),updateProduct);
-Route.delete("/deleteProduct/:id",deleteProduct);
-Route.post("/deleteProductImage",deleteProductImage);
-Route.post("/announceSkidka",announceSkidka);
-Route.get("/get/ProdcutsMix",getProducts);
-Route.post("/takeProductInfo/:id",takeProduct);
-Route.post("/imageUploadProduct",upload.single("productimage"),imageFileUploadAssist);
+Route.get("/get/baseInfo",getBaseInfo);
+
 
 
 

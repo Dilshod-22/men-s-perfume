@@ -15,9 +15,11 @@ app.use(express.static("uploads"));
 
 const UserRoute = require("./Routers/userRouter");
 const ProductRoute = require("./Routers/productRouter");
+const AdminPanel = require("./Routers/adminRouter");
 
 app.use("/api/user/",UserRoute);
 app.use("/api/product/",ProductRoute);
+app.use("/api/admin/",AdminPanel)
 
 
 

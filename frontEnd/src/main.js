@@ -1,4 +1,4 @@
-import './main.js'
+// import './main.js'
 import "./style.css"
 import 'primeicons/primeicons.css';
 import { createApp } from 'vue'

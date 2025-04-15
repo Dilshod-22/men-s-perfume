@@ -1,12 +1,20 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../views/mainView.vue';
 import Karzinka from '../views/karzinka.vue';
+import createProduct from "../views/createProduct/createProduct.vue";
+import DashKT from "../views/dashboard/adminDashboard.vue";
+import productList from "../components/productList.vue";
+import chartVue from '../views/chartVue.vue';
 
 const routes = [
   { path: '/', name: 'Home', component: Home },
   { path: '/home', name: 'Home', component: Home },
-  { path: '/karzinka', name: 'Karzinka', component: Karzinka },
-  { path: '3', name: 'Karzinka', component: Karzinka }
+  // { path: '/DashKT', name: 'AdminDashboard', component: DashKT },
+  { path: '/product/:id', name: 'Karzinka', component: Karzinka },
+  { path: '/homeX', name: 'chartVue', component: chartVue },
+  { path: '/createProduct', name: 'CreateProduct', component: createProduct },
+  { path: '/admin/productList', name: 'productList', component: productList }
+  
 ];
 
 const router = createRouter({
