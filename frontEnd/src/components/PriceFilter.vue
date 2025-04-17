@@ -3,10 +3,6 @@
   <div class="filter-container">
     <!-- Price Range Section -->
     <div class="filter-section">
-      <div>
-        <h3 class="text-lg">search</h3>
-        <input class="border border-black h-9 w-full mt-3 mb-5 rounded pl-2" type="text" v-model="prodcutName"  @input="updateNameFilter">
-      </div>
       <div class="filter-header" @click="togglePriceFilter">
         <h3>Цена, BYN</h3>
         <span class="arrow" :class="{ 'arrow-up': showPriceFilter }">^</span>
@@ -25,24 +21,6 @@
           </div>
         </div>
         
-        <div class="slider-container">
-          <input 
-            type="range" 
-            class="slider" 
-            :min="priceRange.min" 
-            :max="priceRange.max" 
-            v-model="minPrice" 
-            @input="updatePriceFilter"
-          />
-          <input 
-            type="range" 
-            class="slider slider-right" 
-            :min="priceRange.min" 
-            :max="priceRange.max" 
-            v-model="maxPrice" 
-            @input="updatePriceFilter"
-          />
-        </div>
       </div>
     </div>
     
@@ -97,7 +75,7 @@ export default {
       showAllBrands: false,
       
       // Price range values
-      minPrice: 120,
+      minPrice: 10,
       maxPrice: 450,
       priceRange: {
         min: 0,
@@ -156,17 +134,24 @@ export default {
     },
     
     updateBrandFilter() {
+      // console.log(this.brands);
+      
       const selectedBrands = this.brands
         .filter(brand => brand.selected)
         .map(brand => brand.id);
+        
+        const selectedBrandsActiv = this.brands
+        .filter(brand => brand.selected === true);
+     
+
       
-      this.$emit('brand-change', selectedBrands);
+      this.$emit('typeProdcut-change', selectedBrandsActiv);
     },
     
     // Reset all filters
     resetFilters() {
       this.minPrice = this.priceRange.min;
-      this.maxPrice = this.priceRange.max;
+      this.maxPrice = this.priceRange.max;  
       
       this.brands.forEach(brand => {
         brand.selected = false;

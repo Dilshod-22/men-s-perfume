@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 const ImageKit = require("imagekit");
 const path = require("path");
-const streamifier = require('streamifier');
+const streamifier = require("streamifier");
 const imagekit = new ImageKit({
   publicKey: "public_rAybsQad4S9MYw+BKkmoRhSqD/I=",
   privateKey: "private_TSz93gxCDXt8uvllKTuxKwJL7a4=",
@@ -22,38 +22,47 @@ const getCategory = asyncHandler(async (req, res) => {
   console.log("ishladi");
 
   let category = [
-    {name:"Yuz va tana parvarishi"},
-    {name:"soch parvarishi"},
-    {name:"Soqol va qirilish"},
-    {name:"Og'iz gigiyenasi"},
-    {name:"Qo'l va Oyoq parvarishi"},
-    {name:"Atir va hidlar"},
-    {name:"Salomatlik"},
-    {name:"Boshqalar"},
+    { name: "Yuz va tana parvarishi",selected: false },
+    { name: "soch parvarishi",selected: false },
+    { name: "Soqol va qirilish", selected: false},
+    { name: "Og'iz gigiyenasi",selected: false },
+    { name: "Qo'l va Oyoq parvarishi" ,selected: false},
+    { name: "Atir va hidlar" ,selected: false},
+    { name: "Salomatlik" ,selected: false},
+    { name: "Boshqalar" ,selected: false},
   ];
   res.json(category).end();
 });
 const searchProduct = asyncHandler(async (req, res) => {
   const { productName } = req.body;
-  const query = `
-        SELECT id, productName, brand, count, sku, price, productimage
-        FROM productsList
-        WHERE productName ILIKE $1
-        ORDER BY productName
-    `;
 
-  const result = await pool.query(query, [`%${productName}%`]);
-  res
-    .json({
-      count: result.rows.length,
-      users: result.rows,
-    })
-    .end();
+  if (!productName) {
+    return res.status(400).json({ message: "Mahsulot nomi kerak" });
+  }
+
+  const query = `
+    SELECT id, productName, brand, count, sku, price, productimage
+    FROM productsList
+    WHERE productName ILIKE $1
+    ORDER BY productName
+  `;
+
+  try {
+    const { rows } = await pool.query(query, [`%${productName}%`]);
+
+    res.status(200).json({
+      count: rows.length,
+      products: rows,
+    });
+  } catch (error) {
+    console.error("searchProduct xatosi:", error);
+    res.status(500).json({ message: "Server xatosi" });
+  }
 });
 
-const imageFileUploadAssist = asyncHandler(async(req,res) => {
+const imageFileUploadAssist = asyncHandler(async (req, res) => {
   console.log(req.file);
-  
+
   try {
     if (req.file && req.file.buffer) {
       const result = await imagekit.upload({
@@ -61,7 +70,7 @@ const imageFileUploadAssist = asyncHandler(async(req,res) => {
         fileName: req.file.originalname,
       });
       console.log(result.url);
-      
+
       return res.status(200).json({ url: result.url });
     } else {
       return res.status(400).json({ error: "No image file provided" });
@@ -70,8 +79,7 @@ const imageFileUploadAssist = asyncHandler(async(req,res) => {
     console.error("Image upload error:", error);
     return res.status(500).json({ error: "Image upload failed" });
   }
-})
- 
+});
 
 const assistCreateProduct = (getQuery, getQueryParams) => {
   return new Promise((resolve, reject) => {
@@ -85,8 +93,6 @@ const assistCreateProduct = (getQuery, getQueryParams) => {
 };
 
 const createProduct = asyncHandler(async (req, res) => {
-
-  
   try {
     const updates = req.body;
 
@@ -130,7 +136,7 @@ const createProduct = asyncHandler(async (req, res) => {
         );
       });
     }
-    
+
     for (const [key, value] of Object.entries(updates)) {
       if (!allowedFields.includes(key)) continue;
       insertFields.push(key);
@@ -183,22 +189,22 @@ const createProduct = asyncHandler(async (req, res) => {
   }
 });
 
-const thumbnailYuklash = asyncHandler(()=>{
+const thumbnailYuklash = asyncHandler(() => {
   const uploadThumbnail = async (fileBuffer) => {
     const resizedBuffer = await sharp(fileBuffer)
       .resize(300, 300)
       .jpeg()
       .toBuffer();
-  
+
     return new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'products/thumbnails' }, // ixtiyoriy papka
+        { folder: "products/thumbnails" }, // ixtiyoriy papka
         (error, result) => {
           if (error) return reject(error);
           resolve(result.secure_url); // yoki result.public_id
         }
       );
-  
+
       streamifier.createReadStream(resizedBuffer).pipe(uploadStream);
     });
   };
@@ -323,6 +329,7 @@ const getProducts = asyncHandler(async (req, res) => {
         brand,
         price,
         ratingproduct,
+        category,
         CASE
           WHEN productimage ->> 'status' = 'thumbnail'
           THEN productimage ->> 'imageLink'
@@ -338,11 +345,11 @@ const getProducts = asyncHandler(async (req, res) => {
 });
 
 const takeProduct = asyncHandler(async (req, res) => {
-  console.log('keldi');
-  
-  const {id} = req.params;
+  console.log("keldi");
+
+  const { id } = req.params;
   let newQuery = `SELECT * FROM productslist WHERE id='${id}'`;
-  
+
   let response = await pool.query(newQuery);
   res.json(response).end();
 });
@@ -357,5 +364,5 @@ module.exports = {
   announceSkidka,
   getProducts,
   takeProduct,
-  imageFileUploadAssist
+  imageFileUploadAssist,
 };

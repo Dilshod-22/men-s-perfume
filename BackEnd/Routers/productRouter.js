@@ -30,7 +30,7 @@ Route.put("/updateProduct/:id",upload.single("productimage"),updateProduct);
 Route.delete("/deleteProduct/:id",deleteProduct);
 Route.post("/deleteProductImage",deleteProductImage);
 Route.post("/announceSkidka",announceSkidka);
-Route.get("/get/ProdcutsMix",getProducts);
+Route.get("/get/ProdcutsMix/1",getProducts);
 Route.post("/takeProductInfo/:id",takeProduct);
 Route.post("/imageUploadProduct",upload.single("productimage"),imageFileUploadAssist);
 

@@ -1,7 +1,7 @@
 <!-- Header.vue -->
 <template>
     <header class="bg-white py-3 px-6 mb-5 rounded-lg shadow-md border">
-      <div class="container mx-auto flex items-center justify-between">
+      <div class="mx-auto flex items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center">
           <router-link to="/home" class="flex items-center">
@@ -47,20 +47,22 @@
             </span>
           </button>
         </router-link>
-  
+       
           <!-- Wishlist -->
           <button class="text-gray-500 hover:text-pink-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </button>
-  
+
           <!-- Account -->
+          <router-link to="/profile">
           <button class="text-gray-500 hover:text-pink-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </button>
+        </router-link>
         </div>
       </div>
     </header>
