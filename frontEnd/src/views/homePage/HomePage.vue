@@ -6,7 +6,7 @@
      </div>
     
     <!-- Render the current route view -->
-    <router-view class="mt-32 w-full"/>
+    <router-view class="w-full pt-32"/>
   </div>
 </template>
 

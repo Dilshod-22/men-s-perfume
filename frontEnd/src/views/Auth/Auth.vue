@@ -167,29 +167,36 @@ export default {
       }
     },
     async signIn() {
-      this.errorMessage = "";
-      try {
-        const response = await axios.post(
-          "http://localhost:8000/api/user/loginUser",
-          {
-            email: this.signInForm.email,
-            password: this.signInForm.password,
-          }
-        );
-
-        if (response.data?.rows?.length > 0) {
-          // console.log("Login Success:", response.data.rows[0]);
-          toast.success("Login success");
-          this.$emit("update-auth-user", this.selectedRole);
-          this.signInForm = { email: "", password: "" };
-        } else {
-          this.errorMessage = "Invalid login credentials.";
-        }
-      } catch (err) {
-        console.error("Login Error:", err);
-        this.errorMessage = "Login failed. Please try again.";
+  this.errorMessage = "";
+  try {
+    const response = await axios.post(
+      "http://localhost:8000/api/user/loginUser",
+      {
+        email: this.signInForm.email,
+        password: this.signInForm.password,
       }
-    },
+    );
+
+    if (response.data?.rows?.length > 0) {
+      const userData = response.data.rows[0]; // Get the first user from the rows array
+      toast.success("Login success");
+      
+      // Save user data to localStorage with proper references
+      localStorage.setItem("userId", userData.id);
+      localStorage.setItem("userRole", userData.role);
+      
+      this.$emit("update-auth-user", this.selectedRole);
+      this.signInForm = { email: "", password: "" };
+    } else {
+      console.log('error');
+      toast.error("login or password wrong");
+      this.errorMessage = "Invalid login credentials.";
+    }
+  } catch (err) {
+    console.error("Login Error:", err);
+    this.errorMessage = "Login failed. Please try again.";
+  }
+}
   },
 };
 

@@ -23,7 +23,7 @@ const getAllUser = asyncHandler(async(req,res) => {
 const loginUser = asyncHandler(async(req,res) => {
     const {email, password} = req.body;
     try{
-        let query = `SELECT id, username, preferred_language,profile_image_url
+        let query = `SELECT id, username,role, preferred_language,profile_image_url
 FROM userslist
 WHERE email = '${email}' AND password_hash = '${password}'`;
 // console.log(query);

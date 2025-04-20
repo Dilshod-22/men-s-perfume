@@ -4,7 +4,7 @@
       <div class="mx-auto flex items-center justify-between">
         <!-- Logo -->
         <div class="flex items-center">
-          <router-link to="/home" class="flex items-center">
+          <router-link to="/" class="flex items-center">
             <span class="text-pink-500 text-2xl font-bold">Men</span>
             <span class="text-green-700 text-xl font-medium">Parfum</span>
           </router-link>
@@ -35,7 +35,7 @@
         <!-- Icon Navigation -->
         <div class="flex items-center space-x-4">
           <!-- Cart -->
-            <router-link to="/karzinka">     
+            <router-link to="/ShoppingCart">     
  
     
           <button class="text-gray-500 hover:text-pink-500 relative">
@@ -47,14 +47,14 @@
             </span>
           </button>
         </router-link>
-       
+        <router-link to="/profile">
           <!-- Wishlist -->
           <button class="text-gray-500 hover:text-pink-500">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
           </button>
-
+        </router-link>
           <!-- Account -->
           <router-link to="/profile">
           <button class="text-gray-500 hover:text-pink-500">
@@ -63,11 +63,29 @@
             </svg>
           </button>
         </router-link>
+        <router-link to="/" @click="clearStorage">
+          <button  class="text-gray-500 hover:text-pink-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+       viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M4 12h12m0 0l-4-4m4 4l-4 4" />
+  </svg>
+</button>
+
+        </router-link>
         </div>
       </div>
     </header>
   </template>
   
   <script setup>
+  
+  function clearStorage() {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("userRole");
+    window.location.reload(); 
+  }
+
+        
   // No additional setup needed for this component
   </script>

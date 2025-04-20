@@ -216,6 +216,7 @@ onMounted(getProductInfo);
     font-family: Arial, sans-serif;
     max-width: 1200px;
     margin: 0 auto;
+    margin-top: 100px;
     padding: 20px;
     color: #333;
   }

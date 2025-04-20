@@ -13,7 +13,8 @@ const {
     announceSkidka,
     getProducts,
     takeProduct,
-    imageFileUploadAssist
+    imageFileUploadAssist,
+    addToShoppingCart
 } = require("../Controller/productCTRl");
 
 
@@ -30,9 +31,10 @@ Route.put("/updateProduct/:id",upload.single("productimage"),updateProduct);
 Route.delete("/deleteProduct/:id",deleteProduct);
 Route.post("/deleteProductImage",deleteProductImage);
 Route.post("/announceSkidka",announceSkidka);
-Route.get("/get/ProdcutsMix/1",getProducts);
+Route.get("/get/ProdcutsMix/:id",getProducts);
 Route.post("/takeProductInfo/:id",takeProduct);
 Route.post("/imageUploadProduct",upload.single("productimage"),imageFileUploadAssist);
+Route.post("/addToshoppingCart",addToShoppingCart);
 
 
 
